@@ -1,0 +1,55 @@
+Instructions
+Make simple CRUD application with user AUTH.
+Users can access application only after success login, each request and action can be done with
+authorisation header
+
+REGISTER
+in this page user can register by providing username and two passwords
+each username should be unique, min 4, max 20 symbols
+passwords should match, min 4 max 20 symbols
+Also show validation errors if there is any
+
+LOGIN
+user logs in by providing correct credentials (username, password)
+if correct data provided, user gets token from back-end, which later will be used for all requests
+
+HOME PAGE
+in this  page it is possible to see all posts,
+click on post title should navigate to SINGLE POST PAGE
+clicking on post owner username should navigaate to SINGLE USER PAGE
+clicking on "Add favorite" should add post to favorites
+
+PROFILE PAGE
+in this page user can change his photo url, username, or password
+
+MESSAGES
+in this page received messages are shown, each message can be deleted or replied to
+(additional points if messages done with sockets - messages appears instantly for other user)
+
+FAVORITES
+in this page favorite posts are shown, each post cold be removed from favorites in this page
+
+CREATE POST
+in this page user can create new post.
+post should have these fields: title, description, time, username
+
+SINGLE POST PAGE (post/:post_id)
+in this page post info is shown, also every user can comment under the post, and see other users comments
+
+SINGLE USER PAGE (user/:username)
+in this page user information shown, also here user can send message to other user
+also in this page all user posts visible
+
+TECHNOLOGIES TO USE
+
+react.js
+react-router-dom
+zustand
+node.js
+express
+dotenv
+mongoDb
+jsonwebtoken
+
+
+ADD APP TO GIT HUB AND ATTACH GIT LINK WHEN FINISH
