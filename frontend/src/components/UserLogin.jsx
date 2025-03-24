@@ -46,7 +46,7 @@ const UserLogin = () => {
 
             <div className="mb-3">
                 <label>Username:</label>
-                <input type="text" ref={usernameRef} placeholder="Please enter you email" className="w-100 p-1 mt-2"/>
+                <input type="text" ref={usernameRef} placeholder="Please enter your username" className="w-100 p-1 mt-2"/>
             </div>
             <div className="mb-3">
                 <label>Password:</label>

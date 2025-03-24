@@ -25,8 +25,12 @@ const UserRegister = () => {
         }
 
         setError("");
+        const userInfo ={
+            username: username,
+            password: password
+        }
 
-        const response = await http.post("/register", {username, password});
+        const response = await http.post("/register", userInfo);
 
         if (response.success) {
             setSuccess("Registration successful!");
