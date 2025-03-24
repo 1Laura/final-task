@@ -28,6 +28,9 @@ const getToken = async (url) => {
             "Content-Type": "application/json"
         }
     });
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     return await response.json();
 };
 
@@ -47,6 +50,9 @@ const postToken = async (url, data) => {
         },
         body: JSON.stringify(data)
     });
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     return await response.json();
 };
 
@@ -56,9 +62,12 @@ const post = async (url, data) => {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
     });
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     return await response.json();
 };
 
-const http = { get, getToken, postToken, post };
+const http = {get, getToken, postToken, post};
 
 export default http;
