@@ -4,7 +4,7 @@ import UserLogin from "../components/UserLogin.jsx";
 
 const RegisterLoginPage = () => {
     return (
-        <div className="container">
+        <div className="container pt-5">
             <div className="d-flex gap-5">
                 <div className="flex-grow-1">
                     <UserRegister/>
