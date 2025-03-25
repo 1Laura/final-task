@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import useStore from "../store/useMain.js";
+import useStore from "../store/useStore.js";
 
 const NavBar = () => {
     const {currentUser} = useStore(state => state);
@@ -16,9 +16,10 @@ const NavBar = () => {
 
                 {currentUser && (
                     <>
-                        <Link to="/userprofile" className="nav-link p-2"><b>User Profile</b></Link>
                         <Link to="/allposts" className="nav-link p-2"><b>All Posts</b></Link>
                         <Link to="/createpost" className="nav-link p-2"><b>Create Post</b></Link>
+                        <Link to="/userprofile" className="nav-link p-2"><b>User Profile</b></Link>
+
                         <Link to="/allusers" className="nav-link p-2"><b>All Users</b></Link>
                     </>
                 )}
