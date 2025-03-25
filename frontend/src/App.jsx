@@ -3,7 +3,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import RegisterLoginPage from "./pages/RegisterLoginPage.jsx";
 import NavBar from "./components/NavBar.jsx";
 import AllPostsPage from "./pages/AllPostsPage.jsx";
-import mainStore from "./store/useMain.js";
+import mainStore from "./store/useStore.js";
 import CreatePostPage from "./pages/CreatePostPage.jsx";
 
 function App() {
