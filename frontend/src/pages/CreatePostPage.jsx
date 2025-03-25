@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 import http from "../plugins/https";
 import {useNavigate} from "react-router-dom";
-import mainStore from "../store/useMain";
+import mainStore from "../store/useStore.js";
 
 const CreatePostPage = () => {
     const {currentUser} = mainStore(state => state);
@@ -22,9 +22,9 @@ const CreatePostPage = () => {
 
         const response = await http.postToken("/createpost", postData);
 
-        // if (response.success) {
-        //     navigate("/allposts");
-        // }
+        if (response.success) {
+            navigate("/allposts");
+        }
 
         console.log(response);
     }

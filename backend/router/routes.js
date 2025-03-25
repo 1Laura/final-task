@@ -4,7 +4,9 @@ const router = express.Router();
 const {
     registerUser,
     loginUser,
-    createPost
+    createPost,
+    getAllPosts,
+    toggleFavorite
 } = require("../controllers/mainController");
 
 const {validateRegister, validateLogin} = require("../middleware/validators");
@@ -20,5 +22,10 @@ router.post("/login", validateLogin, loginUser);
 // create post
 router.post("/createpost", userAuth, createPost);
 
+// get all posts
+router.get("/allposts", userAuth, getAllPosts);
+
+// export router
+router.post('/toggle-favorite', userAuth, toggleFavorite);
 
 module.exports = router;
