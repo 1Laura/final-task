@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react';
 import http from "../plugins/https";
 import {useNavigate} from "react-router-dom";
-import useStore from "../store/useMain.js";
+import useStore from "../store/useStore.js";
 
 const UserLogin = () => {
     const usernameRef = useRef(null);
@@ -52,8 +52,9 @@ const UserLogin = () => {
                 <label>Password:</label>
                 <input type="password" ref={passwordRef} placeholder="Please enter password" className="w-100 p-1 mt-2"/>
             </div>
-
-            <button onClick={handleSubmit} className="btn btn-secondary w-100 border-dark"> Login</button>
+            <div className="d-flex justify-content-center">
+                <button className="btn btn-secondary w-50 border-dark" onClick={handleSubmit}> Login</button>
+            </div>
         </div>
     );
 };

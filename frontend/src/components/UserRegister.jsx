@@ -25,7 +25,7 @@ const UserRegister = () => {
         }
 
         setError("");
-        const userInfo ={
+        const userInfo = {
             username: username,
             password: password
         }
@@ -62,7 +62,10 @@ const UserRegister = () => {
                 <label>Confirm Password:</label>
                 <input type="password" ref={confirmPasswordRef} placeholder="Please confirm password" className="w-100 p-1 mt-2"/>
             </div>
-            <button className="btn btn-secondary w-100 border-dark" onClick={handleSubmit}> Register</button>
+
+            <div className="d-flex justify-content-center">
+                <button className="btn btn-secondary w-50 border-dark" onClick={handleSubmit}> Register</button>
+            </div>
         </div>
     );
 };
