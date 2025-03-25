@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const userDB = require("../schemas/userSchema");
-
+const postDB = require("../schemas/postSchema");
 
 module.exports = {
     registerUser: async (req, res) => {
@@ -19,7 +19,7 @@ module.exports = {
         };
         const newUser = new userDB(user);
         await newUser.save();
-        res.status(201).json({message: "register", error: false, success: true, newUser});
+        res.status(201).json({message: "register", error: false, success: true});
 
     },
     loginUser: async (req, res) => {
@@ -44,5 +44,19 @@ module.exports = {
         } catch (error) {
             res.status(500).json({message: "Server error", error: true, success: false});
         }
+    },
+    createPost: async (req, res) => {
+        const {title, image, description} = req.body;
+        const newPost = new postDB({
+            image,
+            title,
+            description,
+            user: req.user._id,//is JWT tokeno
+        });
+
+        await newPost.save();
+
+        return res.status(201).json({message: "Post created", error: false, success: true, newPost});
+
     },
 }

@@ -8,7 +8,7 @@ const UserLogin = () => {
     const passwordRef = useRef(null);
 
     const navigate = useNavigate();
-    const {setUser} = useStore(state => state);
+    const {setCurrentUser} = useStore(state => state);
 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -30,7 +30,7 @@ const UserLogin = () => {
         if (response.success) {
             console.log(response)
             localStorage.setItem("token", response.token);
-            setUser(response.user);
+            setCurrentUser(response.user);
             setSuccess(`Login successful. Redirecting...`);
             navigate("/allposts");
         } else {
