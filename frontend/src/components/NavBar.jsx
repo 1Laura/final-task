@@ -1,10 +1,14 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import useStore from "../store/useStore.js";
 
 const NavBar = () => {
-    const {currentUser} = useStore(state => state);
-
+    const {currentUser, logout} = useStore(state => state);
+    const navigate = useNavigate();
+    function userLogout(){
+        logout();
+        navigate("/");
+    }
     return (
         <div className="navbar navbar-light bg-secondary-subtle d-flex justify-content-between px-5 py-0">
             <div className="d-flex gap-2 navbar-nav flex-row align-items-center">
@@ -18,9 +22,12 @@ const NavBar = () => {
                     <>
                         <Link to="/allposts" className="nav-link p-2"><b>All Posts</b></Link>
                         <Link to="/createpost" className="nav-link p-2"><b>Create Post</b></Link>
-                        <Link to="/userprofile" className="nav-link p-2"><b>User Profile</b></Link>
+                        <Link to="/profile" className="nav-link p-2"><b>Profile</b></Link>
 
-                        <Link to="/allusers" className="nav-link p-2"><b>All Users</b></Link>
+                        {/*<Link to="/allusers" className="nav-link p-2"><b>All Users</b></Link>*/}
+                        <button onClick={userLogout} className="btn btn-outline-secondary btn-sm ms-3">
+                            Logout
+                        </button>
                     </>
                 )}
             </div>
