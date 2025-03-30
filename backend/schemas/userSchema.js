@@ -17,7 +17,7 @@ const userSchema = new Schema({
             minlength: 4,
             maxlength: 200,
         },
-        imageUrl: {
+        image: {
             type: String,
             default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlXTd6FF5TBJbnQMU3SrwA3JAUMd3Ovu1lvw&s",
         },
