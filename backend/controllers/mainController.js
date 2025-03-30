@@ -24,26 +24,22 @@ module.exports = {
     },
     loginUser: async (req, res) => {
         const {username, password} = req.body;
-        try {
-            const myUser = await userDB.findOne({username});
-            if (!myUser) return res.status(404).json({message: "User not found", error: true, success: false});
 
-            const samePassword = await bcrypt.compare(password, myUser.password);//->pirmas passwordas is frontendo kur atsiunte useris, antras is DB
+        const myUser = await userDB.findOne({username});
+        if (!myUser) return res.status(404).json({message: "User not found", error: true, success: false});
 
-            if (!samePassword) return res.status(401).json({message: "incorrect credentials", error: true, success: false});
+        const samePassword = await bcrypt.compare(password, myUser.password);//->pirmas passwordas is frontendo kur atsiunte useris, antras is DB
 
-            let user = {
-                username: myUser.username,
-                _id: myUser._id,
-                image: myUser.image,
-            };
+        if (!samePassword) return res.status(401).json({message: "incorrect credentials", error: true, success: false});
 
-            const token = jwt.sign(user, process.env.SECRET_KEY);//useris irasomas i token
+        let user = {
+            username: myUser.username,
+            _id: myUser._id,
+            image: myUser.image,
+        };
 
-            return res.status(200).json({message: "User logged in", error: false, success: true, token, user});
-        } catch (error) {
-            res.status(500).json({message: "Server error", error: true, success: false});
-        }
+        const token = jwt.sign(user, process.env.SECRET_KEY);//useris irasomas i token
+        return res.status(200).json({message: "User logged in", error: false, success: true, token, user});
     },
     createPost: async (req, res) => {
         const {title, image, description} = req.body;
@@ -67,13 +63,12 @@ module.exports = {
             return res.status(404).json({message: "Posts not found", error: true, success: false});
         }
 
-        console.log(posts);
+        // console.log(posts);
         return res.status(200).json({message: "All posts", error: false, success: true, posts});
     },
     toggleFavorite: async (req, res) => {
-        const userId = req.user._id; // iš JWT middleware
-        const postId = req.body.postId;
-
+        const {postId} = req.body;
+        const userId = req.user._id;
 
         const user = await userDB.findById(userId);
         const post = await postDB.findById(postId);
@@ -100,5 +95,61 @@ module.exports = {
             favorites: user.favorites,
             likes: post.likes
         });
+    },
+    getUserByUsername: async (req, res) => {
+        const myUsername = req.params.username;
+        // console.log(myUsername)
+        let user = await userDB.findOne({username: myUsername});
+
+        if (!user) {
+            return res.status(404).json({message: "User not found", error: true});
+        }
+        user = user.toObject();
+        delete user.password;
+        res.status(200).json({message: "User found", error: false, user});
+
+    },
+    updateProfile: async (req, res) => {
+        const {username, image, password, confirmPassword} = req.body;
+        const userId = req.user._id;
+
+        const updateData = {};
+
+        if (username) {
+            const existingUser = await userDB.findOne({username, _id: {$ne: userId}});
+            if (existingUser) {
+                return res.status(400).json({message: "Username already taken", error: true});
+            }
+            updateData.username = username;
+        }
+
+        if (image) updateData.image = image;
+
+        if (password || confirmPassword) {
+            if (password !== confirmPassword) {
+                return res.status(400).json({message: "Passwords do not match", error: true});
+            }
+            const salt = await bcrypt.genSalt(5);
+            updateData.password = await bcrypt.hash(password, salt);
+        }
+
+        const updatedUser = await userDB.findByIdAndUpdate(userId, updateData, {new: true});
+
+        if (!updatedUser) {
+            return res.status(404).json({message: "User not found", error: true});
+        }
+        res.status(200).json({message: "User updated successfully", success: true, user: updatedUser});
+    },
+    getUserPosts: async (req, res) => {
+        const myUsername = req.params.username;
+        // console.log(myUsername);
+        const user = await userDB.findOne({username: myUsername});
+        console.log(user);
+        if (!user) {
+            return res.status(404).json({message: "User not found", error: true});
+        }
+        const posts = await postDB.find({user: user._id}).populate("user");
+
+        res.status(200).json({message: "User posts found", error: false, posts});
     }
 }
