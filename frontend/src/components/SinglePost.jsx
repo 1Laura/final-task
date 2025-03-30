@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FaHeart, FaRegHeart} from "react-icons/fa";
 import mainStore from "../store/useStore.js";
 import http from "../plugins/https.js";
+import {Link} from "react-router-dom";
 
 const SinglePost = ({postInfo}) => {
     const [liked, setLiked] = useState(false);
@@ -15,18 +16,19 @@ const SinglePost = ({postInfo}) => {
         if (currentUser) {
             setLiked(favorites.includes(postInfo._id));
         }
-    }, [favorites, postInfo._id, currentUser]);
+    }, [favorites, postInfo._id, currentUser, setLiked]);
 
     const toggleLike = async () => {
         if (isAuthor) return;
 
-        const response = await http.postToken("/toggle-favorite", {postId: postInfo._id});
-        console.log(response.posts);
+        toggleFavoriteLocally(postInfo._id);
 
-        toggleFavoriteLocally(postInfo._id); // update zustand
-        setLiked(prevLiked => !prevLiked);//nustatome naują reikšmę liked būsenai, bet naudojam ankstesnę (dabartinę) reikšmę
+        const response = await http.postToken("/togglefavorite", {postId: postInfo._id});
 
-        setLikeCount(response?.likes); // sync with backend
+        setLiked(prevLiked => !prevLiked);
+        if (response && response.likes !== undefined) {
+            setLikeCount(response.likes);
+        }
     };
 
     return (
@@ -47,7 +49,7 @@ const SinglePost = ({postInfo}) => {
 
             <div className="p-3">
                 <h4>{postInfo.title}</h4>
-                <p>Post author: <b>{postInfo.user.username}</b></p>
+                <p>Post author: <b><Link to={`/user/${postInfo.user.username}`}>{postInfo.user.username}</Link></b></p>
                 <p>Created at: <b>{new Date(postInfo.createdAt).toLocaleString("lt-LT")}</b></p>
 
                 <div className="d-flex justify-content-center">
