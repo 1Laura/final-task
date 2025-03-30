@@ -32,7 +32,7 @@ const UserLogin = () => {
             localStorage.setItem("token", response.token);
             setCurrentUser(response.user);
             setSuccess(`Login successful. Redirecting...`);
-            navigate("/allposts");
+            navigate("/profile");
         } else {
             setError(response.error || 'Login failed. Please check your credentials.');
         }
