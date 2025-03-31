@@ -6,11 +6,12 @@ const AllPostsPage = () => {
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        http.getToken("/allposts")
-            .then(response => {
-                setPosts(response.posts)
-                console.log(response);
-            })
+        const fetchPosts = async () => {
+            const response = await http.getToken("/allposts")
+            console.log(response.posts);
+            setPosts(response.posts)
+        };
+        fetchPosts();
     }, []);
 
     return (
