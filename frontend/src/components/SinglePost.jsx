@@ -55,14 +55,14 @@ const SinglePost = ({postInfo}) => {
 
             <div className="p-3">
                 <h4>{postInfo.title}</h4>
-                <p>Post author: <b>
+                <p className="lh-1">Post author: <b>
                     {postInfo.user
                         ? <Link to={`/user/${postInfo.user.username}`}>{postInfo.user.username}</Link>
                         : <span className="text-muted">[deleted user]</span>
                     }
                 </b></p>
-                <p>Created at: <b>{new Date(postInfo.time).toLocaleString("lt-LT")}</b></p>
-                <p>Comments: <b>{postInfo.comments?.length || 0}</b></p>
+                <p className="lh-1">Created at: <b>{new Date(postInfo.time).toLocaleString("lt-LT")}</b></p>
+                {/*<p className="lh-1">Comments: <b>{postInfo.comments?.length || 0}</b></p>*/}
                 <p className="d-flex align-items-center gap-1">
                     <BiMessageDetail/> <b>{postInfo.comments?.length || 0}</b>
                 </p>

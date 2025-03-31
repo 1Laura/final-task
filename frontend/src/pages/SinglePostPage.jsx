@@ -41,31 +41,33 @@ const SinglePostPage = () => {
     }
 
     return (
-        <div className="container pt-5">
+        <div className="container pt-5 mb-5">
             <h3>Single post page</h3>
             <img src={post.image} alt=""/>
-            <h5>{post.title}</h5>
+            <h2 className="mt-4">{post.title}</h2>
             <p>{post.description}</p>
-            <p>Author: {post.user && post.user.username}</p>
-            <p>Created at: {new Date(post.time).toLocaleString('lt-LT')}</p>
-            <p>Likes: {post.likes}</p>
+            <p className="lh-1">Author: <b>{post.user && post.user.username}</b></p>
+            <p className="lh-1">Created at: {new Date(post.time).toLocaleString('lt-LT')}</p>
+            <p className="lh-1">Likes: <b>{post.likes}</b></p>
 
             <h4>Comments:</h4>
-            <div className="">
-                {comments && comments.map(comment => (
-                    <div key={comment._id} className="border p-3 m-2 rounded-3">
-                        <p>{comment.text}</p>
-                        <p>Commented by: {comment.commentAuthor?.username || '[deleted]'}</p>
 
-                        <p>Created at: {new Date(comment.time).toLocaleString('lt-LT')}</p>
-                    </div>
-                ))}
+            {comments && comments.map(comment => (
+                <div key={comment._id} className="border p-2 rounded-3 mb-3">
+                    <p className="lh-1">{comment.text}</p>
+                    <p className="lh-1">Commented by: <b>{comment.commentAuthor?.username || '[deleted]'}</b></p>
+                    <p className="lh-1 mb-0">Created at: <em>{new Date(comment.time).toLocaleString('lt-LT')}</em></p>
+                </div>
+            ))}
+
+            <div className="mb-3">
+                <label><b>Comment content:</b></label>
+                <textarea ref={commentRef} placeholder="Please entercomment content" className="d-block w-100 p-1 mt-2"/>
+            </div>
+            <div className="d-flex justify-content-center">
+                <button className="btn btn-secondary w-25 border-dark" onClick={createComment}> Write comment</button>
             </div>
 
-            <div className="p-5">
-                <input type="text" ref={commentRef}/>
-                <button onClick={createComment}>Create comment</button>
-            </div>
 
         </div>
     )
