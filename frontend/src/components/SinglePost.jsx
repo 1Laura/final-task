@@ -8,8 +8,9 @@ import {BiMessageDetail} from "react-icons/bi";
 const SinglePost = ({postInfo}) => {
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(postInfo.likes || 0);
+
     const navigate = useNavigate();
-    const {currentUser, favorites, toggleFavoriteLocally} = mainStore(state => state);
+    const {currentUser, favorites, toggleFavoriteLocally, setFavorites} = mainStore(state => state);
 
     const isAuthor = currentUser?._id === postInfo.user._id;
 
@@ -26,10 +27,14 @@ const SinglePost = ({postInfo}) => {
 
         const response = await http.postToken("/togglefavorite", {postId: postInfo._id});
 
-        setLiked(prevLiked => !prevLiked);
         if (response && response.likes !== undefined) {
             setLikeCount(response.likes);
+            setLiked(response.message === "Added to favorites");
         }
+        if (response.favorites) {
+            setFavorites(response.favorites);
+        }
+
     };
 
     const readMore = () => {
