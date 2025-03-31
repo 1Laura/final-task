@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const userDB = require("../schemas/userSchema");
 const postDB = require("../schemas/postSchema");
 const commentDB = require("../schemas/commentSchema");
+const messageDB = require("../schemas/messageSchema");
 
 module.exports = {
     registerUser: async (req, res) => {
@@ -187,4 +188,40 @@ module.exports = {
         res.status(200).json({message: "Favorite posts", error: false, success: true, favoritePosts});
 
     },
+    createMessage: async (req, res) => {
+        const {receiverUsername, text} = req.body;
+        const senderId = req.user._id;
+
+        if (!text || !receiverUsername) {
+            return res.status(400).json({message: "Invalid message data", error: true});
+        }
+
+        const receiver = await userDB.findOne({username: receiverUsername});
+
+        if (!receiver) {
+            return res.status(404).json({message: "Receiver not found", error: true});
+        }
+
+        const newMessage = new messageDB({
+            sender: senderId,
+            receiver: receiver._id,
+            text
+        });
+
+        await newMessage.save();
+
+        res.status(201).json({message: "Message sent", error: false, success: true, newMessage});
+
+    },
+    getMessages: async (req, res) => {
+
+        const userId = req.user._id;
+
+        const messages = await messageDB
+            .find({receiver: userId})
+            .populate('sender', 'username image') // duoda info apie siuntėją
+            .sort({time: -1}); // naujausios viršuje
+
+        res.status(200).json({message: "Messages fetched", error: false, success: true, messages});
+    }
 }

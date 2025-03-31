@@ -13,7 +13,9 @@ const {
     getPostById,
     createComment,
     getFavoritePosts,
-    } = require("../controllers/mainController");
+    createMessage,
+    getMessages
+} = require("../controllers/mainController");
 
 const {validateRegister, validateLogin} = require("../middleware/validators");
 
@@ -51,5 +53,11 @@ router.post("/createcomment", userAuth, createComment);
 
 // get favorite posts
 router.post("/getfavoriteposts", userAuth, getFavoritePosts);
+
+//create message
+router.post("/createmessage", userAuth, createMessage);
+
+//get messages
+router.get("/getmessages", userAuth, getMessages)
 
 module.exports = router;
