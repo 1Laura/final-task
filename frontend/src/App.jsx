@@ -22,7 +22,7 @@ function App() {
 
                     {currentUser && <Route path="/createpost" element={<CreatePostPage/>}></Route>}
                     {currentUser && <Route path="/allposts" element={<AllPostsPage/>}></Route>}
-                    {currentUser && <Route path="/favoritesposts" element={<FavoritesPage/>}></Route>}
+                    {currentUser && <Route path="/favorites" element={<FavoritesPage/>}></Route>}
                     {currentUser && <Route path="/profile" element={<ProfilePage/>}></Route>}
                     {currentUser && <Route path="/user/:username" element={<UserPage/>}></Route>}
                     {currentUser && <Route path="/post/:postId" element={<SinglePostPage/>}></Route>}

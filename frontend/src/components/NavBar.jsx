@@ -24,7 +24,7 @@ const NavBar = () => {
                         <Link to="/createpost" className="nav-link p-2"><b>Create Post</b></Link>
                         <Link to="/profile" className="nav-link p-2"><b>Profile</b></Link>
 
-                        <Link to="/favoritesposts" className="nav-link p-2"><b>Favorites</b></Link>
+                        <Link to="/favorites" className="nav-link p-2"><b>Favorites</b></Link>
                         <button onClick={userLogout} className="btn btn-outline-secondary btn-sm ms-3">
                             Logout
                         </button>

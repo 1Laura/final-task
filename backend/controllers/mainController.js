@@ -36,6 +36,7 @@ module.exports = {
             username: myUser.username,
             _id: myUser._id,
             image: myUser.image,
+            favorites: myUser.favorites
         };
 
         const token = jwt.sign(user, process.env.SECRET_KEY);//useris irasomas i token
@@ -177,5 +178,13 @@ module.exports = {
         await post.save();
 
         res.send({message: "Comment created", error: false, success: true, comment: newComment});
+    },
+    getFavoritePosts: async (req, res) => {
+        const {favorites} = req.body;
+
+        const favoritePosts = await postDB.find({_id: {$in: favorites}}).populate('user', 'username image').populate('comments');
+
+        res.status(200).json({message: "Favorite posts", error: false, success: true, favoritePosts});
+
     },
 }
