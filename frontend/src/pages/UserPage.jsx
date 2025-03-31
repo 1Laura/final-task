@@ -30,7 +30,7 @@ const UserPage = () => {
                         <h5>{post.title}</h5>
                         <p>{post.description}</p>
                         <p>Post author: <b>{post.user.username}</b></p>
-                        <p>Created at: <b>{new Date(post.createdAt).toLocaleString("lt-LT")}</b></p>
+                        <p>Created at: <b>{new Date(post.time).toLocaleString("lt-LT")}</b></p>
                         {/*<div className="d-flex justify-content-center">*/}
                         {/*    <button className="btn btn-secondary w-75 border-dark">Read more</button>*/}
                         {/*</div>*/}
