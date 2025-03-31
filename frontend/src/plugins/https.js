@@ -78,6 +78,19 @@ const post = async (url, data) => {
     }
 };
 
-const http = {get, getToken, postToken, post};
+const deleteToken = async (url) => {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${API_URL}${url}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+        },
+    });
+    if (!response.ok) throw new Error(`Network response was not ok: ${response.status}`);
+    return response.json();
+}
+
+const http = {get, getToken, postToken, post, deleteToken};
 
 export default http;
