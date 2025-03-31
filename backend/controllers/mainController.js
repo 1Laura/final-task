@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const userDB = require("../schemas/userSchema");
 const postDB = require("../schemas/postSchema");
+const commentDB = require("../schemas/commentSchema");
 
 module.exports = {
     registerUser: async (req, res) => {
@@ -20,7 +21,6 @@ module.exports = {
         const newUser = new userDB(user);
         await newUser.save();
         res.status(201).json({message: "register", error: false, success: true});
-
     },
     loginUser: async (req, res) => {
         const {username, password} = req.body;
@@ -49,20 +49,15 @@ module.exports = {
             description,
             user: req.user._id,//is JWT tokeno
         });
-
         await newPost.save();
-
-        return res.status(201).json({message: "Post created", error: false, success: true, newPost});
-
+        return res.status(201).json({message: "Post created", error: false, success: true, post: newPost});
     },
     getAllPosts: async (req, res) => {
         //populate = automatiškai prijunk man kitą kolekciją, pagal šitą ID, ir duok reikiamus laukus.
-        const posts = await postDB.find().populate("user", "username image");
-
+        const posts = await postDB.find().populate('user', 'username image').populate('comments');
         if (!posts || posts.length === 0) {
             return res.status(404).json({message: "Posts not found", error: true, success: false});
         }
-
         // console.log(posts);
         return res.status(200).json({message: "All posts", error: false, success: true, posts});
     },
@@ -86,7 +81,6 @@ module.exports = {
             user.favorites.push(postId);
             post.likes += 1;
         }
-
         await user.save();
         await post.save();
 
@@ -144,12 +138,44 @@ module.exports = {
         const myUsername = req.params.username;
         // console.log(myUsername);
         const user = await userDB.findOne({username: myUsername});
-        console.log(user);
+        // console.log(user);
         if (!user) {
             return res.status(404).json({message: "User not found", error: true});
         }
         const posts = await postDB.find({user: user._id}).populate("user");
 
         res.status(200).json({message: "User posts found", error: false, posts});
-    }
+    },
+    getPostById: async (req, res) => {
+        const postId = req.params.postId;
+        const post = await postDB.findById(postId).populate('user', 'username image');
+        if (!post) {
+            return res.status(404).json({message: "Post not found", error: true});
+        }
+
+        const comments = await commentDB.find({post: postId}).populate('commentAuthor', 'username');
+
+        res.status(200).json({message: "Post found", error: false, singlePost: post, comments});
+    },
+    createComment: async (req, res) => {
+        const {commentText, postId} = req.body;
+        const commentAuthor = req.user._id;
+
+        const post = await postDB.findById(postId);
+        if (!post) {
+            return res.status(404).json({message: "Post not found", error: true});
+        }
+
+        const newComment = new commentDB({
+            text: commentText,
+            commentAuthor,
+            post: postId,
+        });
+        await newComment.save();
+
+        post.comments.push(newComment._id);
+        await post.save();
+
+        res.send({message: "Comment created", error: false, success: true, comment: newComment});
+    },
 }
