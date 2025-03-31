@@ -12,6 +12,7 @@ const mainStore = create((set) => ({
     currentUser: null,
     favorites: [],
     userInfo: null,
+    setFavorites: (favoritesArray) => set({favorites: favoritesArray}),
 
 
     setCurrentUser: (newUser) => set({
@@ -21,7 +22,7 @@ const mainStore = create((set) => ({
 
     setUserInfo: (newUserInfo) => set({userInfo: newUserInfo}),
 
-    logout: () => set({currentUser: null}),
+    logout: () => set({currentUser: null, favorites: []}),
 
 
     toggleFavoriteLocally: (postId) => set((state) => ({
