@@ -9,6 +9,7 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import UserPage from "./pages/UserPage.jsx";
 import FavoritesPage from "./pages/FavoritesPage.jsx";
 import SinglePostPage from "./pages/SinglePostPage.jsx";
+import MessagesPage from "./pages/MessagesPage.jsx";
 
 function App() {
     const {currentUser} = mainStore(state => state);
@@ -26,6 +27,8 @@ function App() {
                     {currentUser && <Route path="/profile" element={<ProfilePage/>}></Route>}
                     {currentUser && <Route path="/user/:username" element={<UserPage/>}></Route>}
                     {currentUser && <Route path="/post/:postId" element={<SinglePostPage/>}></Route>}
+
+                    {currentUser && <Route path="/messages" element={<MessagesPage/>}></Route>}
 
                 </Routes>
             </BrowserRouter>
