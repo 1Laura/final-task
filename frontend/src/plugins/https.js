@@ -35,37 +35,47 @@ const getToken = async (url) => {
 };
 
 const postToken = async (url, data) => {
-    const token = localStorage.getItem("token");
+    try {
+        const token = localStorage.getItem("token");
 
-    if (!token) {
-        console.error("No authentication token found");
-        return {error: "Unauthorized - No Token"};
-    }
+        if (!token) {
+            console.error("No authentication token found");
+            return {error: "Unauthorized - No Token"};
+        }
 
-    const response = await fetch(`${API_URL}${url}`, {
-        method: "POST",
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    });
-    if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const response = await fetch(`${API_URL}${url}`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to fetch:", error);
+        throw error;
     }
-    return await response.json();
 };
 
 const post = async (url, data) => {
-    const response = await fetch(`${API_URL}${url}`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(data)
-    });
-    if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+    try {
+        const response = await fetch(`${API_URL}${url}`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to fetch:", error);
+        throw error;
     }
-    return await response.json();
 };
 
 const http = {get, getToken, postToken, post};
