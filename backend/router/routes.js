@@ -14,7 +14,8 @@ const {
     createComment,
     getFavoritePosts,
     createMessage,
-    getMessages
+    getMessages,
+    deleteMessage
 } = require("../controllers/mainController");
 
 const {validateRegister, validateLogin} = require("../middleware/validators");
@@ -58,6 +59,9 @@ router.post("/getfavoriteposts", userAuth, getFavoritePosts);
 router.post("/createmessage", userAuth, createMessage);
 
 //get messages
-router.get("/getmessages", userAuth, getMessages)
+router.get("/getmessages", userAuth, getMessages);
+
+//delete message
+router.delete("/deletemessage/:messageId", userAuth, deleteMessage);
 
 module.exports = router;
