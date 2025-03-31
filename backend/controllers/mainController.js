@@ -214,14 +214,25 @@ module.exports = {
 
     },
     getMessages: async (req, res) => {
-
         const userId = req.user._id;
-
         const messages = await messageDB
             .find({receiver: userId})
             .populate('sender', 'username image') // duoda info apie siuntėją
             .sort({time: -1}); // naujausios viršuje
 
         res.status(200).json({message: "Messages fetched", error: false, success: true, messages});
+    },
+    deleteMessage: async (req, res) => {
+        const {messageId} = req.params;
+
+        const message = await messageDB.findById(messageId);
+
+        if (!message) {
+            return res.status(404).json({message: "Message not found", error: true});
+        }
+
+        await messageDB.findByIdAndDelete(messageId);
+
+        res.status(200).json({message: "Message deleted", error: false, success: true});
     }
 }
