@@ -1,10 +1,20 @@
 const express = require("express");
 const app = express();
-app.use(express.json())
+const path = require("path");
+app.use(express.json());
 require('dotenv').config();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const mainRouter = require("./router/routes");
+
+// Serve frontend static files
+const publicPath = path.join(__dirname, "public");
+app.use(express.static(publicPath));
+
+// Fallback to index.html for SPA
+app.get("*", (req, res) => {
+    res.sendFile(path.join(publicPath, "index.html"));
+});
 
 mongoose.connect(process.env.MONGO_KEY)
     .then(() => {
