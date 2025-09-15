@@ -5,7 +5,7 @@
   "main": "App.js",
   "scripts": {
     "start": "cd backend && npm install && npm start",
-    "heroku-postbuild": "cd frontend && npm install && npm run build",
+    "heroku-postbuild": "cd frontend && npm install && npx vite build",
     "deploy": "git push heroku main"
   },
   "engines": {
