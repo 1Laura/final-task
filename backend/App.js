@@ -28,9 +28,6 @@ mongoose.connect(process.env.MONGO_KEY)
         console.error(`❌ Failed to connect to the database:`, err);
     });
 
-
-app.use("/", mainRouter);
-
 ////// Start server
 const PORT = process.env.PORT || 2002;
 app.listen(PORT, () => {
