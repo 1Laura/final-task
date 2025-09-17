@@ -10,37 +10,49 @@ const UserRegister = () => {
     const [success, setSuccess] = useState("");
 
     const handleSubmit = async () => {
-        const username = usernameRef.current.value;
+        const username = usernameRef.current.value.trim();
         const password = passwordRef.current.value;
         const confirmPassword = confirmPasswordRef.current.value;
 
         if (!username || !password || !confirmPassword) {
             setError("All fields are required");
+            setSuccess("");
             return;
         }
 
         if (password !== confirmPassword) {
             setError("Passwords do not match");
+            setSuccess("");
             return;
         }
 
         setError("");
-        const userInfo = {
-            username: username,
-            password: password
-        }
 
-        const response = await http.post("/register", userInfo);
+        try {
+            const userInfo = {
+                username: username,
+                password: password
+            }
+            // console.log("Sending to /register:", userInfo);
 
-        if (response.success) {
-            setSuccess("Registration successful!");
-            usernameRef.current.value = "";
-            passwordRef.current.value = "";
-            confirmPasswordRef.current.value = "";
-        } else {
-            setError("Registration failed. Please try again.");
+            const response = await http.post("/register", userInfo);
+
+            if (response.success) {
+                setSuccess("Registration successful!");
+                setError("");
+                usernameRef.current.value = "";
+                passwordRef.current.value = "";
+                confirmPasswordRef.current.value = "";
+            } else {
+                setError("Registration failed. Please try again.");
+                setSuccess("");
+            }
+            console.log(response)
+        } catch (err) {
+            console.log(err);
+            setSuccess("");
+            console.error(err);
         }
-        console.log(response)
     };
 
     return (
@@ -51,7 +63,7 @@ const UserRegister = () => {
 
             <div className="mb-3">
                 <label>Username:</label>
-                <input type="email" ref={usernameRef} placeholder="Please enter uniq username" className="w-100 p-1 mt-2"/>
+                <input type="text" ref={usernameRef} placeholder="Please enter uniq username" className="w-100 p-1 mt-2"/>
             </div>
 
             <div className="mb-3">

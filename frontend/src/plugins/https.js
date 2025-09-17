@@ -69,7 +69,8 @@ const post = async (url, data) => {
             body: JSON.stringify(data)
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            const errorBody = await response.json().catch(() => ({})); // jei JSON neteisingas
+            throw new Error(errorBody.message || `HTTP error! Status: ${response.status}`);
         }
         return await response.json();
     } catch (error) {

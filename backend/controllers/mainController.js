@@ -6,32 +6,32 @@ const commentDB = require("../schemas/commentSchema");
 const messageDB = require("../schemas/messageSchema");
 
 module.exports = {
-    registerUser: async (req, res) => {
-        try {
-            const {username, password} = req.body;
+    registerUser:
+        async (req, res) => {
+            try {
+                const {username, password} = req.body;
 
-            const userExists = await userDB.findOne({username});
-            if (userExists) return res.status(400).json({message: "User exists", error: true, success: false});
+                const userExists = await userDB.findOne({username});
+                if (userExists) return res.status(400).json({message: "User exists", error: true, success: false});
 
-            const salt = await bcrypt.genSalt(10);
-            const hash = await bcrypt.hash(password, salt);
+                const salt = await bcrypt.genSalt(10);
+                const hash = await bcrypt.hash(password, salt);
 
-            const user = {
-                username,
-                password: hash
-            };
-            const newUser = new userDB(user);
+                const user = {
+                    username,
+                    password: hash
+                };
+                const newUser = new userDB(user);
 
-            await newUser.save();
+                await newUser.save();
 
-            return res.status(201).json({message: "User registered", error: false, success: true});
+                return res.status(201).json({message: "User registered", error: false, success: true});
 
-        } catch (err) {
-            console.error("Error registering user: ", err);
-            return res.status(500).json({message: "Server error", error: true, success: false});
-        }
-    },
-
+            } catch (err) {
+                console.error("Error registering user: ", err);
+                return res.status(500).json({message: "Server error", error: true, success: false});
+            }
+        },
     loginUser:
         async (req, res) => {
             const {username, password} = req.body;
