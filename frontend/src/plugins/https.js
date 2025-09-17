@@ -74,7 +74,8 @@ const post = async (url, data) => {
         }
         return await response.json();
     } catch (error) {
-        console.error("Failed to fetch:", error);
+        // console.error("Failed to fetch:", error);
+        console.log(`POST to ${url} failed:`, error);
         throw error;
     }
 };

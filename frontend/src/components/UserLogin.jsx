@@ -22,19 +22,30 @@ const UserLogin = () => {
 
         if (!username || !password) {
             setError("All fields are required");
+            setSuccess("");
             return;
         }
+        setError("");
 
-        const response = await http.post("/login", {username, password});
+        try {
+            const response = await http.post("/login", {username, password});
 
-        if (response.success) {
-            console.log(response)
-            localStorage.setItem("token", response.token);
-            setCurrentUser(response.user);
-            setSuccess(`Login successful. Redirecting...`);
-            navigate("/profile");
-        } else {
-            setError(response.error || 'Login failed. Please check your credentials.');
+            if (response.success) {
+                console.log(response)
+                localStorage.setItem("token", response.token);
+                setCurrentUser(response.user);
+                setSuccess(`Login successful. Redirecting...`);
+                navigate("/profile");
+            } else {
+                setError("Login failed. Please check your credentials.");
+                // setError(response.error || 'Login failed. Please check your credentials.');
+                setSuccess("");
+            }
+            console.log(response);
+        } catch (err) {
+            console.log(err);
+            setSuccess("");
+            setError("Login failed. Please check your credentials.");
         }
     };
 

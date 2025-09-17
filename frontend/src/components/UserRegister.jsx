@@ -36,7 +36,7 @@ const UserRegister = () => {
             // console.log("Sending to /register:", userInfo);
 
             const response = await http.post("/register", userInfo);
-
+            console.log(response)
             if (response.success) {
                 setSuccess("Registration successful!");
                 setError("");
@@ -48,10 +48,11 @@ const UserRegister = () => {
                 setSuccess("");
             }
             console.log(response)
+
         } catch (err) {
             console.log(err);
             setSuccess("");
-            console.error(err);
+            setError("User exists");
         }
     };
 
