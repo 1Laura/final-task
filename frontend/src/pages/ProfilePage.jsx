@@ -25,11 +25,11 @@ const ProfilePage = () => {
         resetMessages();
         const username = newUsernameRef.current.value.trim();
         if (!username) {
-            alert("Username cannot be empty");
+            setError("Username cannot be empty");
             return;
         }
         if (username.length < 4 || username.length > 20) {
-            alert("Username must be between 4 and 20 characters");
+            setError("Username must be between 4 and 20 characters");
             return;
         }
 
