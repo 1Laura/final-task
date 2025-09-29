@@ -55,11 +55,11 @@ const ProfilePage = () => {
         resetMessages();
         const image = newImageRef.current.value.trim();
         if (!image) {
-            alert("Image URL cannot be empty");
+            setError("Image URL cannot be empty");
             return;
         }
         if (!image.startsWith("http")) {
-            alert("Image URL must start with http or https");
+            setError("Image URL must start with http or https");
             return;
         }
         try {
@@ -84,12 +84,12 @@ const ProfilePage = () => {
         const confirmPassword = confirmPasswordRef.current.value;
 
         if (!password || !confirmPassword) {
-            alert("Both password fields are required");
+            setError("Both password fields are required");
             return;
         }
 
         if (password !== confirmPassword) {
-            alert("Passwords do not match");
+            setError("Passwords do not match");
             return;
         }
 
