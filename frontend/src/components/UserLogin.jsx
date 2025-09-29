@@ -33,6 +33,7 @@ const UserLogin = () => {
             if (response.success) {
                 console.log(response)
                 localStorage.setItem("token", response.token);
+                localStorage.setItem("user", JSON.stringify(response.user))
                 setCurrentUser(response.user);
                 setSuccess(`Login successful. Redirecting...`);
                 navigate("/profile");
