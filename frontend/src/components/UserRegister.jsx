@@ -40,19 +40,19 @@ const UserRegister = () => {
             if (response.success) {
                 setSuccess("Registration successful!");
                 setError("");
+
                 usernameRef.current.value = "";
                 passwordRef.current.value = "";
                 confirmPasswordRef.current.value = "";
             } else {
-                setError("Registration failed. Please try again.");
+                setError(response.message || "Registration failed. Please try again.");
                 setSuccess("");
             }
-            console.log(response)
-
         } catch (err) {
-            console.log(err);
+            console.error("Registration error:", err);
+            const message = err.message || "An unexpected error occurred";
             setSuccess("");
-            setError("User exists");
+            setError(message);
         }
     };
 
