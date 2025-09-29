@@ -1,4 +1,4 @@
-import React, { useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import useStore from "../store/useStore.js";
 import http from "../plugins/https.js";
 
@@ -10,35 +10,108 @@ const ProfilePage = () => {
     const newPasswordRef = useRef(null);
     const confirmPasswordRef = useRef(null);
 
+    const [success, setSuccess] = useState("");
+    const [error, setError] = useState("");
+
     const [username, setUsername] = useState(currentUser.username);
     const [image, setImage] = useState(currentUser.image);
 
+    const resetMessages = () => {
+        setSuccess("");
+        setError("");
+    };
 
     async function changeUsername() {
-        const username = newUsernameRef.current.value;
-        const response = await http.postToken("/updateprofile", {username});
-        // console.log(response);
-        setUsername(response.user.username);
-        setCurrentUser(response.user);
+        resetMessages();
+        const username = newUsernameRef.current.value.trim();
+        if (!username) {
+            alert("Username cannot be empty");
+            return;
+        }
+        if (username.length < 4 || username.length > 20) {
+            alert("Username must be between 4 and 20 characters");
+            return;
+        }
+
+        try {
+            const response = await http.postToken("/updateprofile", {username});
+            console.log(response);
+
+            if (response.success) {
+                setUsername(response.user.username);
+                setCurrentUser(response.user);
+                setSuccess("Username updated successfully");
+                newUsernameRef.current.value = "";
+            } else {
+                setError("Failed to update username");
+            }
+        } catch (err) {
+            // console.log(err);
+            setError("Something went wrong while updating username");
+        }
     }
 
     async function changeImage() {
-        const image = newImageRef.current.value;
-        const response = await http.postToken("/updateprofile", {image});
-        // console.log(response.user.image);
-        setImage(response.user.image);
+        resetMessages();
+        const image = newImageRef.current.value.trim();
+        if (!image) {
+            alert("Image URL cannot be empty");
+            return;
+        }
+        if (!image.startsWith("http")) {
+            alert("Image URL must start with http or https");
+            return;
+        }
+        try {
+            const response = await http.postToken("/updateprofile", {image});
+            // console.log(response.user.image);
+            if (response.success) {
+                setImage(response.user.image);
+                setSuccess("Image updated successfully");
+                newImageRef.current.value = "";
+            } else {
+                setError("Failed to update image");
+            }
+        } catch (err) {
+            console.log(err);
+            setError("Something went wrong while updating image");
+        }
     }
 
     async function changePassword() {
+        resetMessages();
         const password = newPasswordRef.current.value;
         const confirmPassword = confirmPasswordRef.current.value;
-        await http.postToken("/updateprofile", {password, confirmPassword});
-    }
 
+        if (!password || !confirmPassword) {
+            alert("Both password fields are required");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
+
+        try {
+            const response = await http.postToken("/updateprofile", {password, confirmPassword});
+            console.log(response);
+            setSuccess("Password changed successfully");
+            setError("");
+            newPasswordRef.current.value = "";
+            confirmPasswordRef.current.value = "";
+        } catch (err) {
+            console.log(err);
+            setSuccess("");
+            setError("Failed to change password");
+        }
+    }
 
     return (
         <div className="container pt-5">
             <h2>Profile page</h2>
+            {error && <p className="alert alert-danger">{error}</p>}
+            {success && <p className="alert alert-success">{success}</p>}
 
             <div className="d-flex column-gap-3">
                 <div className="flex-grow-1 text-center w-50">
