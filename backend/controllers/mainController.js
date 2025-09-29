@@ -121,35 +121,49 @@ module.exports = {
         },
     updateProfile:
         async (req, res) => {
-            const {username, image, password, confirmPassword} = req.body;
-            const userId = req.user._id;
+            try {
+                const {username, image, password, confirmPassword} = req.body;
+                const userId = req.user._id;
 
-            const updateData = {};
+                const updateData = {};
 
-            if (username) {
-                const existingUser = await userDB.findOne({username, _id: {$ne: userId}});
-                if (existingUser) {
-                    return res.status(400).json({message: "Username already taken", error: true});
+                if (username) {
+                    const existingUser = await userDB.findOne({username, _id: {$ne: userId}});
+                    if (existingUser) {
+                        return res.status(400).json({message: "Username already taken", error: true});
+                    }
+                    updateData.username = username.trim();
                 }
-                updateData.username = username;
-            }
 
-            if (image) updateData.image = image;
+                if (image) updateData.image = image.trim();
 
-            if (password || confirmPassword) {
-                if (password !== confirmPassword) {
-                    return res.status(400).json({message: "Passwords do not match", error: true});
+                if (password || confirmPassword) {
+                    if (password !== confirmPassword) {
+                        return res.status(400).json({message: "Passwords do not match", error: true});
+                    }
+                    if (password.length < 4 || password.length > 20) {
+                        return res.status(400).json({message: "Password must be between 4 and 20 characters", error: true});
+                    }
+
+                    const salt = await bcrypt.genSalt(10);
+                    updateData.password = await bcrypt.hash(password, salt);
                 }
-                const salt = await bcrypt.genSalt(5);
-                updateData.password = await bcrypt.hash(password, salt);
-            }
 
-            const updatedUser = await userDB.findByIdAndUpdate(userId, updateData, {new: true});
+                const updatedUser = await userDB.findByIdAndUpdate(userId, updateData, {new: true});
 
-            if (!updatedUser) {
-                return res.status(404).json({message: "User not found", error: true});
+                if (!updatedUser) {
+                    return res.status(404).json({message: "User not found", error: true});
+                }
+
+                const userToReturn = updatedUser.toObject();
+                delete userToReturn.password;
+
+                res.status(200).json({message: "User updated successfully", success: true, user: userToReturn});
+
+            } catch (err) {
+                console.error("Error updating profile: ", err);
+                return res.status(500).json({message: "Server error", error: true, success: false});
             }
-            res.status(200).json({message: "User updated successfully", success: true, user: updatedUser});
         },
     getUserPosts:
         async (req, res) => {
@@ -202,7 +216,9 @@ module.exports = {
         async (req, res) => {
             const {favorites} = req.body;
 
-            const favoritePosts = await postDB.find({_id: {$in: favorites}}).populate('user', 'username image').populate('comments');
+            const favoritePosts = await postDB.find({_id: {$in: favorites}})
+                .populate('user', 'username image')
+                .populate('comments');
 
             res.status(200).json({message: "Favorite posts", error: false, success: true, favoritePosts});
 
@@ -245,16 +261,24 @@ module.exports = {
         },
     deleteMessage:
         async (req, res) => {
-            const {messageId} = req.params;
+            try {
+                const {messageId} = req.params;
 
-            const message = await messageDB.findById(messageId);
+                const message = await messageDB.findById(messageId);
 
-            if (!message) {
-                return res.status(404).json({message: "Message not found", error: true});
+                if (!message) {
+                    return res.status(404).json({message: "Message not found", error: true});
+                }
+                if (message.receiver.toString() !== req.user._id.toString()) {
+                    return res.status(403).json({message: "Unauthorized", error: true});
+                }
+
+                await messageDB.findByIdAndDelete(messageId);
+
+                res.status(200).json({message: "Message deleted", error: false, success: true});
+            } catch (err) {
+                console.error("Error deleting message: ", err);
+                return res.status(500).json({message: "Server error", error: true, success: false});
             }
-
-            await messageDB.findByIdAndDelete(messageId);
-
-            res.status(200).json({message: "Message deleted", error: false, success: true});
         }
 }
