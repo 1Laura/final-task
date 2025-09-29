@@ -29,7 +29,7 @@ const getToken = async (url) => {
         }
     });
     if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(errorBody.message || `HTTP error! Status: ${response.status}`);
     }
     return await response.json();
 };
@@ -52,7 +52,7 @@ const postToken = async (url, data) => {
             body: JSON.stringify(data)
         });
         if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.status}`);
+            throw new Error(errorBody.message || `HTTP error! Status: ${response.status}`);
         }
         return await response.json();
     } catch (error) {
